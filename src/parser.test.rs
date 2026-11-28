@@ -193,3 +193,16 @@ fn reports_errors() {
     let err = Parser::parse_str("void f() {").unwrap_err();
     assert!(err.message.contains("expected '}'"));
 }
+
+/// Unary `!` (and its spelling `not`): binds tighter than `&&`, `==`;
+/// nests; `!is` stays the handle comparison.
+#[test]
+fn unary_not() {
+    assert!(matches!(expr("!a").kind, ExprKind::Unary(UnOp::Not, _)));
+    assert!(matches!(expr("not a").kind, ExprKind::Unary(UnOp::Not, _)));
+    assert!(matches!(&expr("!!a").kind, ExprKind::Unary(UnOp::Not, inner) if matches!(inner.kind, ExprKind::Unary(UnOp::Not, _))));
+    assert!(matches!(&expr("!a && b").kind, ExprKind::Binary(l, BinOp::And, _) if matches!(l.kind, ExprKind::Unary(UnOp::Not, _))));
+    assert!(matches!(&expr("!a == b").kind, ExprKind::Binary(l, BinOp::Eq, _) if matches!(l.kind, ExprKind::Unary(UnOp::Not, _))));
+    assert!(matches!(&expr("!f(!a)").kind, ExprKind::Unary(UnOp::Not, inner) if matches!(inner.kind, ExprKind::Call(..))));
+    assert!(matches!(expr("a !is null").kind, ExprKind::Binary(_, BinOp::NotIs, _)));
+}
