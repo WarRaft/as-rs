@@ -206,6 +206,16 @@ same pass, so they always agree.
 | a bare name inside a class that names one of its members | that member (implicit `this`), resolved once the whole file is read |
 | parameters and locals (methods, lambdas and `get`/`set` accessors too, `set`'s implicit `value` included) | their function (`Local(n)`) |
 
+## Formatting
+
+`format::format(src, unit, lines)`: each line moved left or right to its
+level, never a line added, removed or joined, by the shared `{ }` engine
+(`parser_rs::format::braces`; see the
+[`parser-rs` README](../parser-rs/README.md#13-formatting-only-moves-lines)).
+`case` and `default` labels stand at their `switch`'s level, as
+AngelScript's manual has them, and so does a `{` right after one; the
+label's code is one deeper. A heredoc's lines stay.
+
 ## CLI
 
 ```sh

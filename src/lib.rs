@@ -3,6 +3,7 @@
 //! comes from `parser-rs` (see its README for the shared design).
 
 pub mod ast;
+pub mod format;
 pub mod html;
 pub mod lexer;
 pub mod lint;
